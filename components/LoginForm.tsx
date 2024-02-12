@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const InputWrapper = ({
   name,
@@ -50,6 +51,8 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -63,12 +66,14 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
         const response = await formAction(formData);
         if (response.error) {
           toast.error(response.error);
+          setLoading(false);
           return;
         }
 
         if (response.user) {
           toast.success("Login successful");
           localStorage.setItem("user", JSON.stringify(response.user));
+          setLoading(false);
           return;
         }
       }}
@@ -94,8 +99,15 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
       <Button
         type="submit"
         className="w-full bg-teal-600 hover:bg-teal-700 mt-4"
+        onClick={() => {
+          if (!formData.email || !formData.password) {
+            return;
+          }
+          setLoading(true);
+        }}
       >
-        Login
+        {loading && <Loader2 className="w-6 h-6 animate-spin" />}
+        {!loading && "Login"}
       </Button>
     </form>
   );
