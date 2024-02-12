@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useUser } from "./contexts/UserContext";
 
 const InputWrapper = ({
   name,
@@ -54,6 +55,8 @@ const SignupForm = ({ formAction }: { formAction: (formData: any) => any }) => {
 
   const [loading, setLoading] = useState(false);
 
+  const [user, setUser] = useUser();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -75,6 +78,8 @@ const SignupForm = ({ formAction }: { formAction: (formData: any) => any }) => {
           setLoading(false);
           toast.success("Signup successful");
           localStorage.setItem("user", JSON.stringify(response.user));
+          setUser(response.user);
+          return;
         }
       }}
     >

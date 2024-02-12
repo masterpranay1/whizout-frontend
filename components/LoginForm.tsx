@@ -6,6 +6,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useUser } from "./contexts/UserContext";
 
 const InputWrapper = ({
   name,
@@ -53,6 +54,8 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
 
   const [loading, setLoading] = useState(false);
 
+  const [user, setUser] = useUser();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -74,6 +77,11 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
           toast.success("Login successful");
           localStorage.setItem("user", JSON.stringify(response.user));
           setLoading(false);
+          setUser({
+            name: response.user.name,
+            email: response.user.email,
+            id: response.user._id,
+          });
           return;
         }
       }}
