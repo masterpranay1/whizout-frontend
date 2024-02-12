@@ -53,7 +53,7 @@ const NavLinks = () => {
 const Nav = () => {
   return (
     <nav className="lg:flex-1 mr-8">
-      <div className="flex flex-row items-center w-full shadow-inner bg-[#f8fbfb] px-6 rounded-full">
+      <div className="flex flex-row items-center w-full shadow-inner bg-slate-50 px-6 rounded-full">
         <Logo />
         <NavLinks />
       </div>
@@ -81,7 +81,7 @@ const AuthButtons = () => {
 
 export default function Header() {
   return (
-    <header className="sticky top-0 inset-x-0 z-50 px-6 py-4 flex flex-row items-center">
+    <header className="bg-white sticky top-0 inset-x-0 z-50 px-6 py-4 flex flex-row items-center">
       <Nav />
       <AuthButtons />
     </header>
