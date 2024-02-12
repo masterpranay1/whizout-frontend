@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import Link from "next/link";
 
 import { Sparkle } from "lucide-react";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
 import { cn } from "@/lib/utils";
+import HeaderProfile from "./HeaderProfile";
 
 const Logo = () => {
   return (
@@ -61,29 +60,11 @@ const Nav = () => {
   );
 };
 
-const AuthButtons = () => {
-  return (
-    <div className="flex flex-row items-center shadow-inner bg-[#f8fbfb] px-6 rounded-full py-1 lg:py-2 ml-auto">
-      <div className="flex items-center">
-        <Button asChild variant={"link"}>
-          <Link href="/login">Login</Link>
-        </Button>
-        <div className="h-5">
-          <Separator orientation="vertical" />
-        </div>
-        <Button asChild variant={"link"}>
-          <Link href="/signup">Sign Up</Link>
-        </Button>
-      </div>
-    </div>
-  );
-};
-
 export default function Header() {
   return (
     <header className="bg-white sticky top-0 inset-x-0 z-50 px-6 py-4 flex flex-row items-center">
       <Nav />
-      <AuthButtons />
+      <HeaderProfile />
     </header>
   );
 }
