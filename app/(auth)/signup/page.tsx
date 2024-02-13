@@ -7,14 +7,13 @@ import SignupForm from "@/components/SignupForm";
 const Header = () => {
   return (
     <Fragment>
-      <p className="text-3xl font-bold text-teal-600">Good to have you back!</p>
+      <p className="text-3xl font-bold text-teal-600">
+        Welcome to the community
+      </p>
       <p className="text-base text-slate-400">
-        Login to your account to continue. Don't have an account?{" "}
-        <Link
-          href="/auth/signup"
-          className="hover:border-b py-1 text-slate-600"
-        >
-          Signup
+        Already have an account?{" "}
+        <Link href="/auth/login" className="text-teal-600">
+          Login
         </Link>
       </p>
     </Fragment>
