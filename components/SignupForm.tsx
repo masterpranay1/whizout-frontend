@@ -2,10 +2,11 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./contexts/UserContext";
+import { useRouter } from "next/navigation";
 
 const InputWrapper = ({
   name,
@@ -54,6 +55,7 @@ const SignupForm = ({ formAction }: { formAction: (formData: any) => any }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const route = useRouter();
 
   const [user, setUser] = useUser();
 
@@ -64,25 +66,32 @@ const SignupForm = ({ formAction }: { formAction: (formData: any) => any }) => {
     }));
   };
 
-  return (
-    <form
-      action={async () => {
-        const response = await formAction(formData);
-        if (response.error) {
-          toast.error(response.error);
-          setLoading(false);
-          return;
-        }
+  const handleSubmit = async () => {
+    const response = await formAction(formData);
+    if (response.error) {
+      toast.error(response.error);
+      setLoading(false);
+      return;
+    }
 
-        if (response.user) {
-          setLoading(false);
-          toast.success("Signup successful");
-          localStorage.setItem("user", JSON.stringify(response.user));
-          setUser(response.user);
-          return;
-        }
-      }}
-    >
+    if (response.user) {
+      setLoading(false);
+      toast.success("Signup successful");
+      localStorage.setItem("user", JSON.stringify(response.user));
+      setUser(response.user);
+      route.push("/");
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      route.push("/");
+    }
+  }, [user]);
+
+  return (
+    <form action={handleSubmit}>
       <div className="grid grid-cols-2 gap-4">
         <InputWrapper
           name="name"

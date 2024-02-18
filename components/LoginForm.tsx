@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -7,6 +7,7 @@ import { Label } from "./ui/label";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./contexts/UserContext";
+import { useRouter } from "next/navigation";
 
 const InputWrapper = ({
   name,
@@ -56,11 +57,41 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
 
   const [user, setUser] = useUser();
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleSubmit = async () => {
+    const response = await formAction(formData);
+    if (response.error) {
+      toast.error(response.error);
+      setLoading(false);
+      return;
+    }
+
+    if (response.user) {
+      toast.success("Login successful");
+      localStorage.setItem("user", JSON.stringify(response.user));
+      setLoading(false);
+      setUser({
+        name: response.user.name,
+        email: response.user.email,
+        id: response.user._id,
+      });
+      router.push("/");
+      return;
+    }
   };
 
   return (
