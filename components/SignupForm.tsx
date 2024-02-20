@@ -46,7 +46,13 @@ const InputWrapper = ({
   );
 };
 
-const SignupForm = ({ formAction }: { formAction: (formData: any) => any }) => {
+const SignupForm = ({
+  formAction,
+  sendVerificationMail,
+}: {
+  formAction: (formData: any) => any;
+  sendVerificationMail: (id: string) => any;
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -74,14 +80,20 @@ const SignupForm = ({ formAction }: { formAction: (formData: any) => any }) => {
       return;
     }
 
-    if (response.user) {
+    const emailVerificationRes = await sendVerificationMail(response.user.id);
+
+    if (emailVerificationRes.error) {
+      toast.error(emailVerificationRes.error);
       setLoading(false);
-      toast.success("Signup successful");
-      localStorage.setItem("user", JSON.stringify(response.user));
-      setUser(response.user);
-      route.push("/");
       return;
     }
+
+    setLoading(false);
+    toast.success("Signup successful and Email sent");
+    localStorage.setItem("user", JSON.stringify(response.user));
+    setUser(response.user);
+    route.push("/");
+    return;
   };
 
   useEffect(() => {
