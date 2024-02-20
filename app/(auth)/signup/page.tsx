@@ -65,6 +65,31 @@ async function signup(formData: {
   };
 }
 
+async function sendVerificationMail(userId: string) {
+  "use server";
+  console.log(userId);
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/send-verification-email/${userId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  ).then((res) => res.json());
+
+  console.log(res);
+  if (res?.error) {
+    return {
+      error: res.error,
+    };
+  }
+
+  return {
+    message: res.message,
+  };
+}
+
 export default async function SignupPage() {
   return (
     <div className="w-full my-8">
@@ -76,7 +101,10 @@ export default async function SignupPage() {
         )}
       >
         <Header />
-        <SignupForm formAction={signup} />
+        <SignupForm
+          formAction={signup}
+          sendVerificationMail={sendVerificationMail}
+        />
       </div>
     </div>
   );
