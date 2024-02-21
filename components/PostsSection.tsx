@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
+import useSWR from "swr";
 
 interface Post {
   username: string;
@@ -61,21 +62,21 @@ async function getAllPosts() {
 }
 
 const useFetchPosts = () => {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { data: posts, isLoading, mutate } = useSWR("posts", getAllPosts);
+  const [refresh, setRefresh] = useState(false);
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    const posts = await getAllPosts();
-    setPosts(posts);
-    setLoading(false);
+  const refreshPosts = async () => {
+    setRefresh(true);
+    await mutate();
+    setRefresh(false);
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  return { posts, setPosts, loading, fetchPosts };
+  return {
+    posts: posts || [],
+    loading: isLoading,
+    fetchPosts: refreshPosts,
+    refreshing: refresh,
+  };
 };
 
 const PostCardUserInfo = ({
@@ -137,10 +138,10 @@ const PostCard = ({
   return (
     <div
       className={cn([
-        "w-full border flex flex-col p-4 rounded-2xl shadow-md",
+        "w-full border flex flex-col p-4 rounded-2xl shadow-lg",
         "border",
         randomColor,
-        "shadow-inner",
+        // "shadow-inner",
         // "bg-gradient-to-br from-slate-50 to-slate-100",
       ])}
     >
@@ -213,7 +214,7 @@ const RefreshButton = ({
 };
 
 const PostsSection = () => {
-  const { posts, setPosts, loading, fetchPosts } = useFetchPosts();
+  const { posts, loading, fetchPosts, refreshing } = useFetchPosts();
 
   return (
     <div className="w-2/5 flex flex-col gap-4 px-8">
@@ -221,9 +222,9 @@ const PostsSection = () => {
         onClick={async () => {
           await fetchPosts();
         }}
-        loading={loading}
+        loading={refreshing || loading}
       />
-      <ScrollArea className="w-full h-[600px] px-4">
+      <ScrollArea className="w-full h-screen px-4">
         <div className="w-full flex flex-col gap-4">
           {posts.map((post, index) => (
             <PostCard
