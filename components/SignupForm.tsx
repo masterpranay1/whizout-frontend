@@ -94,7 +94,7 @@ const SignupForm = ({
     toast.success("Signup successful and Email sent");
     localStorage.setItem("user", JSON.stringify(response.user));
     setUser(response.user);
-    setUserId(response.user.id);
+    // setUserId(response.user.id);
     route.push("/");
     return;
   };
