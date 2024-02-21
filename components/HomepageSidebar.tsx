@@ -1,50 +1,31 @@
 import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import PostUploadForm from "./PostUploadForm";
+import HomepageAuth from "./HomepageAuth";
 
-const HomepageAuth = ({
-  username,
-  name,
-}: {
-  username: string;
-  name: string;
-}) => {
+const CreatePostDialog = () => {
   return (
-    <div className="p-4 border mb-4 rounded-xl text-slate-600 bg-slate-50 shadow-inner">
-      {username && (
-        <>
-          <h2>
-            Welcome back <span className="font-bold">{name}</span>
-          </h2>
-          <p className="text-slate-400">@{username}</p>
-        </>
-      )}
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          variant={"outline"}
+          className="w-full py-2 rounded-xl border border-blue-500 hover:bg-blue-50 text-slate-600"
+        >
+          Create Post
+        </Button>
+      </DialogTrigger>
 
-      {!username && (
-        <>
-          <h2>Welcome to Wizout</h2>
-          <p className="text-slate-400">
-            Connect with friends and the world around you on wizout.
-          </p>
-          <Button
-            variant={"outline"}
-            className="mt-4 w-full py-2 rounded-xl border border-blue-500 hover:bg-blue-50 text-slate-600"
-          >
-            Sign Up
-          </Button>
-        </>
-      )}
-    </div>
+      <DialogContent>
+        <PostUploadForm />
+      </DialogContent>
+    </Dialog>
   );
 };
 
 const SidebarActions = () => {
   return (
     <div className="flex flex-col border w-full py-8 px-8 rounded-xl">
-      <Button
-        variant={"outline"}
-        className="w-full py-2 rounded-xl border border-blue-500 hover:bg-blue-50 text-slate-600"
-      >
-        Create Post
-      </Button>
+      <CreatePostDialog />
 
       <Button
         variant={"outline"}
@@ -73,7 +54,7 @@ const SidebarActions = () => {
 const HomepageSidebar = () => {
   return (
     <div className="mr-16 w-1/5">
-      <HomepageAuth username="johndoe" name="John Doe" />
+      <HomepageAuth />
       <SidebarActions />
     </div>
   );
