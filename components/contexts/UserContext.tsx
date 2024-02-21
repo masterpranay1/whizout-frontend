@@ -5,6 +5,7 @@ interface User {
   name: string;
   email: string;
   id: string;
+  username: string;
 }
 
 const useUserState = (initialUser: User | null) =>
