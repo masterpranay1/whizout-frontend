@@ -89,6 +89,7 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
         email: response.user.email,
         id: response.user.id,
         username: response.user.username,
+        avatar: response.user.avatar,
       });
       router.push("/");
       return;

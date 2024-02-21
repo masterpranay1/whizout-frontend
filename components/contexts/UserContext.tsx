@@ -6,6 +6,7 @@ interface User {
   email: string;
   id: string;
   username: string;
+  avatar: string;
 }
 
 const useUserState = (initialUser: User | null) =>

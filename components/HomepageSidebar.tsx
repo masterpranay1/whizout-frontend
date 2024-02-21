@@ -2,6 +2,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import PostUploadForm from "./PostUploadForm";
 import HomepageAuth from "./HomepageAuth";
+import Link from "next/link";
 
 const CreatePostDialog = () => {
   return (
@@ -30,8 +31,9 @@ const SidebarActions = () => {
       <Button
         variant={"outline"}
         className="mt-4 w-full py-2 rounded-xl border border-teal-500 hover:bg-teal-50 text-slate-600"
+        asChild
       >
-        Profile
+        <Link href={"profile"}>Profile</Link>
       </Button>
 
       <Button

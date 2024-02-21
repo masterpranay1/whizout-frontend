@@ -6,17 +6,28 @@ import { Textarea } from "./ui/textarea";
 import { useUser } from "./contexts/UserContext";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function PostUploadForm() {
   const [file, setFile] = useState<File | null>(null);
   const [content, setContent] = useState<string>("");
 
   const [user] = useUser();
+  const route = useRouter();
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!user || !content) return;
+    if (!content) {
+      toast.error("Content cannot be empty");
+      return;
+    }
+
+    if (!user) {
+      route.push("/login");
+      toast.error("You need to be logged in to upload a post");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("content", content);
