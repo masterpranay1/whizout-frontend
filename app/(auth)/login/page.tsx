@@ -9,7 +9,7 @@ const Header = () => {
     <Fragment>
       <p className="text-3xl font-bold text-teal-600">Good to have you back!</p>
       <p className="text-base text-slate-400">
-        Login to your account to continue. Don't have an account?&lsquo;
+        Login to your account to continue. Do not have an account?
         <Link
           href="/auth/signup"
           className="hover:border-b py-1 text-slate-600"
