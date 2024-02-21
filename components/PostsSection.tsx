@@ -218,14 +218,14 @@ const PostsSection = () => {
 
   return (
     <div className="w-2/5 flex flex-col gap-4 px-8">
-      <RefreshButton
-        onClick={async () => {
-          await fetchPosts();
-        }}
-        loading={refreshing || loading}
-      />
       <ScrollArea className="w-full h-screen px-4">
-        <div className="w-full flex flex-col gap-4">
+        <RefreshButton
+          onClick={async () => {
+            await fetchPosts();
+          }}
+          loading={refreshing || loading}
+        />
+        <div className="w-full flex flex-col gap-4 mt-4">
           {posts.map((post, index) => (
             <PostCard
               key={index}
