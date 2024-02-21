@@ -53,7 +53,7 @@ const SidebarActions = () => {
 
 const HomepageSidebar = () => {
   return (
-    <div className="mr-16 w-1/5">
+    <div className="w-1/5">
       <HomepageAuth />
       <SidebarActions />
     </div>
