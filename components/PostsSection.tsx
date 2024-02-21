@@ -1,8 +1,11 @@
+"use client";
 import { cn, relativeTimeFromDates } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { Heart } from "lucide-react";
+import { Heart, RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 interface Post {
   username: string;
@@ -13,40 +16,67 @@ interface Post {
 }
 
 async function getPostsId() {
-  "use server";
-
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/post/get-all-posts`,
     {
       method: "GET",
       next: {
         tags: ["posts"],
-        // revalidate: 0,
+        revalidate: 0,
       },
     }
   ).then((res) => res.json());
 
-  console.log(res);
+  // console.log(res);
   return res;
 }
 
 async function getPostById(id: string) {
-  "use server";
-
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/post/get-post-by-id/${id}`,
     {
       method: "GET",
       next: {
-        // revalidate: 0,
+        tags: ["posts"],
+        revalidate: 0,
       },
     }
   ).then((res) => res.json());
 
-  console.log(res);
+  // console.log(res);
 
   return res;
 }
+
+async function getAllPosts() {
+  const postsId = await getPostsId();
+
+  let posts = [];
+
+  for (let i = 0; i < postsId.length; i++) {
+    posts.push(await getPostById(postsId[i]));
+  }
+
+  return posts;
+}
+
+const useFetchPosts = () => {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchPosts = async () => {
+    setLoading(true);
+    const posts = await getAllPosts();
+    setPosts(posts);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  return { posts, setPosts, loading, fetchPosts };
+};
 
 const PostCardUserInfo = ({
   username,
@@ -121,8 +151,8 @@ const PostCard = ({
           <Image
             src={`${process.env.NEXT_PUBLIC_PB_URL}/${cId}/${pId}/${post.image}`}
             alt="post-image"
-            width={100}
-            height={100}
+            width={400}
+            height={400}
             className={cn([
               "h-full w-full object-cover rounded-lg",
               "hover:brightness-50 transition-all duration-300 ease-in-out cursor-pointer",
@@ -136,37 +166,92 @@ const PostCard = ({
   );
 };
 
-const PostsSection = async () => {
-  let postsId = await getPostsId();
+const SkeletonPostCard = () => {
+  return (
+    <div
+      className={cn([
+        "w-full border flex flex-col p-4 rounded-2xl shadow-md",
+        "border",
+        "border-gray-200",
+        "shadow-inner",
+      ])}
+    >
+      <div className="flex flex-row items-center gap-4">
+        <Skeleton className="w-12 h-12 rounded-full" />
+        <div className="flex flex-col gap-2">
+          <Skeleton className="w-24 h-4" />
+          <Skeleton className="w-16 h-3" />
+        </div>
+      </div>
+      <Skeleton className="w-3/4 h-4 my-4" />
+      <Skeleton className="w-3/4 h-4 my-4" />
+      <Skeleton className="w-3/4 h-4 my-4" />
+    </div>
+  );
+};
 
-  let posts = [];
+const RefreshButton = ({
+  onClick,
+  loading,
+}: {
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  loading?: boolean;
+}) => {
+  return (
+    <Button
+      variant={"outline"}
+      className="mr-4 w-fit ml-auto py-2 rounded-xl border border-teal-500 hover:bg-teal-50 text-slate-600"
+      onClick={onClick}
+    >
+      <RefreshCcw
+        size={24}
+        className={cn([loading ? "animate-spin" : "", "text-teal-500 mr-2"])}
+      />
+      {loading ? "Loading" : "Refresh"}
+    </Button>
+  );
+};
 
-  for (let i = 0; i < postsId.length; i++) {
-    posts.push(await getPostById(postsId[i]));
-  }
-
-  console.log(posts);
+const PostsSection = () => {
+  const { posts, setPosts, loading, fetchPosts } = useFetchPosts();
 
   return (
-    <ScrollArea className="w-2/5 h-[600px] px-8">
-      <div className="w-full flex flex-col gap-4">
-        {posts.map((post, index) => (
-          <PostCard
-            key={index}
-            post={{
-              username: post.expand.userId.name || post.expand.userId.username,
-              content: post.content,
-              created: post.created,
-              likes: post.likes,
-              image: post.image,
-            }}
-            cId={post.collectionId}
-            pId={post.id}
-          />
-        ))}
-      </div>
-      <ScrollBar hidden={true} />
-    </ScrollArea>
+    <div className="w-2/5 flex flex-col gap-4 px-8">
+      <RefreshButton
+        onClick={async () => {
+          await fetchPosts();
+        }}
+        loading={loading}
+      />
+      <ScrollArea className="w-full h-[600px] px-4">
+        <div className="w-full flex flex-col gap-4">
+          {posts.map((post, index) => (
+            <PostCard
+              key={index}
+              post={{
+                username:
+                  post.expand.userId.name || post.expand.userId.username,
+                content: post.content,
+                created: post.created,
+                likes: post.likes,
+                image: post.image,
+              }}
+              cId={post.collectionId}
+              pId={post.id}
+            />
+          ))}
+
+          {loading && (
+            <div className="flex flex-col gap-4">
+              <SkeletonPostCard />
+              <SkeletonPostCard />
+              <SkeletonPostCard />
+            </div>
+          )}
+        </div>
+        <ScrollBar hidden={true} />
+      </ScrollArea>
+    </div>
   );
 };
 
