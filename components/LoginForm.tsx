@@ -87,7 +87,8 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
       setUser({
         name: response.user.name,
         email: response.user.email,
-        id: response.user._id,
+        id: response.user.id,
+        username: response.user.username,
       });
       router.push("/");
       return;
@@ -95,28 +96,7 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
   };
 
   return (
-    <form
-      action={async () => {
-        const response = await formAction(formData);
-        if (response.error) {
-          toast.error(response.error);
-          setLoading(false);
-          return;
-        }
-
-        if (response.user) {
-          toast.success("Login successful");
-          localStorage.setItem("user", JSON.stringify(response.user));
-          setLoading(false);
-          setUser({
-            name: response.user.name,
-            email: response.user.email,
-            id: response.user._id,
-          });
-          return;
-        }
-      }}
-    >
+    <form action={handleSubmit}>
       <InputWrapper
         name="email"
         label="Email"
