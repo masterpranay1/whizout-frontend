@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./contexts/UserContext";
 import { useRouter } from "next/navigation";
+import { useSocket } from "./contexts/SocketContext";
 
 const InputWrapper = ({
   name,
@@ -64,6 +65,7 @@ const SignupForm = ({
   const route = useRouter();
 
   const [user, setUser] = useUser();
+  const { setUserId } = useSocket();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -92,6 +94,7 @@ const SignupForm = ({
     toast.success("Signup successful and Email sent");
     localStorage.setItem("user", JSON.stringify(response.user));
     setUser(response.user);
+    setUserId(response.user.id);
     route.push("/");
     return;
   };

@@ -39,8 +39,9 @@ const SidebarActions = () => {
       <Button
         variant={"outline"}
         className="mt-4 w-full py-2 rounded-xl border border-violet-500 hover:bg-violet-50 text-slate-600"
+        asChild
       >
-        Instant Connect
+        <Link href="/instant-connect">Instant Connect</Link>
       </Button>
 
       <Button

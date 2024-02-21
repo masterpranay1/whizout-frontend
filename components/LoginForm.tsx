@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./contexts/UserContext";
 import { useRouter } from "next/navigation";
+import { useSocket } from "./contexts/SocketContext";
 
 const InputWrapper = ({
   name,
@@ -56,6 +57,7 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
   const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useUser();
+  const { setUserId } = useSocket();
 
   const router = useRouter();
 
@@ -91,6 +93,7 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
         username: response.user.username,
         avatar: response.user.avatar,
       });
+      setUserId(response.user.id);
       router.push("/");
       return;
     }

@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import UserProvider from "@/components/contexts/UserContext";
+import { SocketProvider } from "@/components/contexts/SocketContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <UserProvider>
-          <Header />
-          {children}
+          <SocketProvider>
+            <Header />
+            {children}
+          </SocketProvider>
         </UserProvider>
         <Toaster richColors />
       </body>
