@@ -97,7 +97,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!userId) return;
 
-    const _socket = io("http://localhost:8000", {
+    const _socket = io("https://wizout-backend-ts.onrender.com", {
       query: {
         userId: userId,
       },
