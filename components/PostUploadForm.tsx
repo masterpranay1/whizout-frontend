@@ -36,7 +36,7 @@ export default function PostUploadForm() {
     }
     formData.append("userId", user?.id as string);
 
-    toast.loading("Uploading post...");
+    const toastId = toast.loading("Uploading post...");
 
     const res = await fetch(
       `https://whizout.pockethost.io/api/collections/posts/records`,
@@ -52,6 +52,8 @@ export default function PostUploadForm() {
       toast.error(data.error);
       return;
     }
+
+    toast.dismiss(toastId);
 
     toast.success("Post uploaded successfully");
 
