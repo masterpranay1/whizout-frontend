@@ -93,7 +93,8 @@ const LoginForm = ({ formAction }: { formAction: (formData: any) => any }) => {
         username: response.user.username,
         avatar: response.user.avatar,
       });
-      // setUserId(response.user.id);
+      console.log("hello satoshi! here is the user id",response.user.id);
+      setUserId(response.user.id);
       router.push("/");
       return;
     }

@@ -24,6 +24,7 @@ export const ChatSocketProvider: React.FC<ChatSocketProviderProps> = ({ children
   const [chatSocket, setChatSocket] = useState<Socket>();
   const [groups, setGroups] = useState<ChatSocketContext['groups']>([]);
   const [activeGroup, setActiveGroup] = useState<any>("");
+  const [chatUser,setChatUser] = useState<any>();
   
   useEffect(() => {
     
@@ -50,6 +51,8 @@ export const ChatSocketProvider: React.FC<ChatSocketProviderProps> = ({ children
       value={{
         chatSocket,
         groups,
+        chatUser,
+        setChatUser,
       }}
     >
       {children}

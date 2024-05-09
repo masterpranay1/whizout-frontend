@@ -2,6 +2,7 @@
 import React from 'react'
 // import { useSocket } from '../contexts/ChatSocketContext'
 import Image from 'next/image'
+import griff from '../../public/griff.png'
 
 function GroupList({size,group}:{size:number,group:any}) {
 
@@ -12,15 +13,13 @@ function GroupList({size,group}:{size:number,group:any}) {
                 
                 <ul className="divide-y divide-gray-200">
                     <li className="flex items-center py-4 px-2">
-                        
                         <Image
-                            className="w-12 h-12 rounded-full object-cover mr-4"
-                            src="https://randomuser.me/api/portraits/women/72.jpg"
+                            className="w-12 h-12  rounded-full  mr-4"
+                            src={griff}
                             alt="User avatar"
-                            width={12}
-                            height={12}
+                           
                         />
-                        {size>10&&<div className="flex-1 sm:visible invisible">
+                        {size>10&&<div className="flex sm:visible invisible justify-center items-start w-full">
                             <h3 className="text-lg font-medium text-gray-800">{data.name}</h3>
                             
                         </div>}

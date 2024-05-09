@@ -10,18 +10,25 @@ import GroupList from '@/components/Up_components/GroupList'
 import { useChatSocket } from '@/components/contexts/ChatSocketContext'
 import ActiveGroupMsg from '@/components/Up_components/ActiveGroupMsg'
 import { Socket } from 'socket.io-client'
+import { useUser } from '@/components/contexts/UserContext'
+import { getChatUser } from './_action/actions'
+
 
 
 function CommunityPage() {
     const [userListSize, setUserListSize] = useState();
-    const { chatSocket, groups } = useChatSocket() as any;
+    const { chatSocket, groups, chatUser, setChatUser } = useChatSocket() as any;
     const [activeGroup, setActiveGroup] = useState<any>();
     const [message, setMessage] = useState<string>("");
+    const [user, setUser] =  useUser();
+    
+    
+    
 
     function loadGroups() {
         if (chatSocket) {
-            console.log("load-groups called" )
-            chatSocket?.emit('load-groups');
+            console.log("load-groups called for user id",chatUser?.id )
+            chatSocket?.emit('load-groups',chatUser?.id);
 
         }
         
@@ -32,25 +39,20 @@ function CommunityPage() {
         setUserListSize(size as any)
     }
 
-    function fetchGroupMsg(group: any){
-        if (activeGroup) {
-            setActiveGroup(JSON.stringify(group))
-            // chatSocket?.emit('load-group-chats', JSON.parse(activeGroup).id);
-        }
-    }
-    
-    function handleOnChange(e: any) {
-        setMessage(e.target.value);
-        
-    }
-    function handleSend(){
-        chatSocket?.emit('send-message-group', activeGroup.id,message, "userid");
-    }
     useEffect(() => {
         if (activeGroup) {
             chatSocket?.emit('switch-group', JSON.parse(activeGroup).id);
         }
-    }, [activeGroup])
+        console.log("user", user)
+        if(user&&chatUser===undefined){
+            getChatUser(user).then((data)=>{
+                console.log("chat user",data)
+                setChatUser(data?.items[0])
+            } ).catch((err)=>{
+                console.log(err)
+            })
+        }
+    }, [activeGroup,chatUser])
     return (
 
         <ResizablePanelGroup direction="horizontal" className='h-full border-black border'>
@@ -74,25 +76,13 @@ function CommunityPage() {
                     <div >
                         {activeGroup&&JSON.parse(activeGroup)?.name}
                     </div>
-                    <ResizablePanel defaultSize={65} className="bg-gray-200 flex-1 overflow-y-scroll">
-                        {activeGroup&&<ActiveGroupMsg activeGroup={(groups.filter((group: any) => group.id === JSON.parse(activeGroup).id)[0])} />}
+                    <ResizablePanel defaultSize={90} className="bg-gray-200 flex-1 overflow-y-scroll">
+                        {activeGroup?<ActiveGroupMsg activeGroup={(groups.filter((group: any) => group.id === JSON.parse(activeGroup).id)[0])} />:<div className='text-gray-800 italic h-full  w-full justify-center items-center flex'>
+                            Please click on a group to chat or see messages.
+                            </div>}
                     </ResizablePanel>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={15} className='flex bg-gray-100 px-4 py-2 border border-slate-500 text-start word-wrap break-words' >
-
-                        <Textarea
-                            className="w-full h-full border rounded-md px-4 mr-2 text-start word-wrap break-words"
-
-                            placeholder="Type your message..."
-                            onChange={handleOnChange}
-                        />
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-3 rounded-sm h-10"
-                        onClick={handleSend}
-                        >
-                            Send
-                        </button>
-
-                    </ResizablePanel>
+                    
+                   
                 </ResizablePanelGroup>
             </ResizablePanel>
 
